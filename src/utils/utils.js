@@ -52,6 +52,7 @@ utils.timeAgo = function (params) {
         return day + '天';
     }
 }
+//判断手机类型
 utils.phoneType = function () {
     var u = navigator.userAgent, app = navigator.appVersion;
     var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1;
@@ -69,6 +70,7 @@ utils.getWindowHeight = function (jquery) {
     height = jquery(window).height();
     return height;
 }
+//页面分享
 utils.sharePage = function (vm, url, title, desc, type) {
     var params = {};
     var linkUrl = url.split('#')[0] + url.split('#/')[1];
@@ -118,5 +120,9 @@ utils.sharePage = function (vm, url, title, desc, type) {
     }).catch(err => {
         throw err
     })
+}
+//流量统计
+utils.statistics = function () {
+
 }
 module.exports = utils;
