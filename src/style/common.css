@@ -1,0 +1,86 @@
+/*Created By Jisr on 2018/4/23*/
+.theme-color-bg {
+    background-color: #2D394C;
+}
+
+
+/*排版*/
+.text-center {
+    text-align: center;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+/*字体规格*/
+.text-weight700 {
+    font-weight: 700;
+}
+
+.text-weight400 {
+    font-weight: 400;
+}
+
+/* 字体大小 */
+.text-size-12 {
+    font-size: 12px;
+}
+
+.text-size-14 {
+    font-size: 14px;
+}
+
+.text-size-16 {
+    font-size: 16px;
+}
+
+.text-size-18 {
+    font-size: 18px;
+}
+
+.text-size-20 {
+    font-size: 20px;
+}
+
+.rank-title-fs {
+    font-size: 18px;
+    line-height: 18px;
+}
+
+/*字体颜色*/
+.text-grey {
+    color: #8B8B8B;
+}
+
+.text-white {
+    color: #fff;
+}
+
+.text-black {
+    color: #000;
+}
+
+.text-color-ccc {
+    color: #ccc;
+}
+
+.text-color-999 {
+    color: #999;
+}
+
+.text-color-666 {
+    color: #666;
+}
+
+.text-color-333 {
+    color: #333;
+}
+
+[v-cloak] {
+    display: none !important;
+}
