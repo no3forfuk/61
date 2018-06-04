@@ -9,7 +9,7 @@
 
 <script>
     import {getSecondRank} from '../../api/api'
-    import {getWindowHeight} from '../../utils/utils'
+    import {getWindowHeight, sharePage} from '../../utils/utils'
     import {Indicator} from 'mint-ui';
 
     export default {
@@ -19,7 +19,11 @@
                 flag: '#',
                 subInfo: {},
                 query: this.$route.query,
-                page: 1
+                page: 1,
+                share: {
+                    title: '',
+                    desc: ''
+                }
             }
         },
         created() {
@@ -39,6 +43,14 @@
             })
         },
         methods: {
+            sharePage() {
+                let vm = this;
+                let url = location.href;
+                let title = this.share.title;
+                let desc = this.share.desc;
+                let type = 'link';
+                sharePage(vm, url, title, desc, type)
+            },
             getRankList() {
                 var params = {};
                 params.level = 2;
@@ -51,8 +63,11 @@
                 return new Promise((resolve, reject) => {
                     getSecondRank(params).then(res => {
                         this.info = res.data.data;
-                        this.subInfo = res.data.data.data.data
-                        $(document)[0].title = this.info.ranking_name
+                        this.subInfo = res.data.data.data.data;
+                        this.$set(this.share, 'title', res.data.data.ranking_name);
+                        this.$set(this.share, 'desc', res.data.data.ranking_desc);
+                        this.sharePage();
+                        $(document)[0].title = this.info.ranking_name;
                         Indicator.close()
                     }).catch(err => {
                         throw err;

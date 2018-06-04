@@ -31,7 +31,7 @@
 </template>
 
 <script>
-    import {getSecondRank} from '@/api/api'
+    import {getSecondRank, getWXConfig} from '@/api/api'
     import {getWindowHeight} from '../../utils/utils'
 
 
@@ -48,6 +48,7 @@
                 element: {
                     totalPage: 0
                 }
+
             };
         },
         created() {
@@ -65,6 +66,7 @@
         },
         computed: {},
         methods: {
+
             loadNextPage() {
                 this.page++;
                 if (this.page > this.element.totalPage) {
@@ -104,6 +106,7 @@
                     params.page = this.page
                     getSecondRank(params).then(res => {
                         this.info = res.data.data;
+
                         this.element.totalPage = res.data.data.data.last_page;
                         if (res.data.data.data.data.length !== 0) {
                             this.subInfo = this.subInfo.concat(res.data.data.data.data);

@@ -2,6 +2,8 @@
 'use strict'
 const utils = {}
 //时间格式化
+import {getWXConfig} from '../api/api'
+
 utils.timeFormat = function (type, ms) {
     var time;
     if (ms) {
@@ -66,5 +68,55 @@ utils.getWindowHeight = function (jquery) {
     var height;
     height = jquery(window).height();
     return height;
+}
+utils.sharePage = function (vm, url, title, desc, type) {
+    var params = {};
+    var linkUrl = url.split('#')[0] + url.split('#/')[1];
+    params.url = linkUrl
+    getWXConfig(params).then(res => {
+        if (res.status == 200 && res.data.status_code == 1) {
+            var opts = res.data.data;
+            var config = {
+                debug: false,
+                appId: opts.appId,
+                timestamp: opts.timestamp,
+                nonceStr: opts.nonceStr,
+                signature: opts.signature,
+                jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline']
+            }
+            vm.$wx.config(config);
+            vm.$wx.ready(function () {
+                vm.$wx.onMenuShareAppMessage({
+                    title: title,
+                    desc: desc,
+                    link: url,
+                    imgUrl: 'http://p8rk87lub.bkt.clouddn.com/logo.png',
+                    type: type,
+                    success: function () {
+                        vm.$toast({
+                            message: '分享成功',
+                            duration: 1000
+                        })
+                    }
+                })
+                vm.$wx.onMenuShareTimeline({
+                    title: title,
+                    desc: desc,
+                    link: url,
+                    imgUrl: 'http://p8rk87lub.bkt.clouddn.com/logo.png',
+                    type: type,
+                    success: function () {
+                        vm.$toast({
+                            message: '分享成功',
+                            duration: 1000
+                        })
+                    }
+                })
+
+            })
+        }
+    }).catch(err => {
+        throw err
+    })
 }
 module.exports = utils;

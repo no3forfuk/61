@@ -45,7 +45,7 @@
 </template>
 
 <script>
-    import {timeFormat, getWindowHeight} from "../../utils/utils";
+    import {timeFormat, getWindowHeight, sharePage} from "../../utils/utils";
     import {getWXConfig} from '@/api/api';
     import {SWITCH} from '@/config'
     import text from "./text"
@@ -75,7 +75,8 @@
                 $('.footer').css({height: height - headerHeight});
             })();
             //设置标题
-            $(document)[0].title = '首页'
+            $(document)[0].title = '首页';
+
         },
         updated() {
 
@@ -87,37 +88,17 @@
                 this.text = text;
                 this.GLOBAL_SWITCH = SWITCH;
             })();
-            getWXConfig().then(res => {
-                if (res.status == 200 && res.data.status_code == 1) {
-                    var opts = res.data.data;
-                    this.$wx.config({
-                        debug: true,
-                        appId: opts.app_id,
-                        timestamp: opts.timestamp,
-                        nonceStr: opts.noncestr,
-                        signature: opts.signature,
-                        jsApiList: ['onMenuShareAppMessage']
-                    })
-                    this.$wx.onMenuShareAppMessage({
-                        title: 'asdasd', // 分享标题
-                        desc: 'asdasd', // 分享描述
-                        link: 'http://www.rcm.ink/Home/Index#/', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                        imgUrl: '', // 分享图标
-                        type: '', // 分享类型,music、video或link，不填默认为link
-                        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-                        success: function () {
-                            alert('a')
-                        },
-                        complete: function () {
-                            alert('b')
-                        }
-                    });
-                }
-            }).catch(err => {
-                throw err
-            })
+            this.sharePage()
         },
         methods: {
+            sharePage() {
+                let vm = this;
+                let url = location.href;
+                let title = '首页';
+                let desc = 'RCM';
+                let type = 'link';
+                sharePage(vm, url, title, desc, type)
+            },
             login() {
                 this.$router.push('login')
             },

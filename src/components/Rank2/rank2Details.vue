@@ -92,6 +92,7 @@
             }
         },
         methods: {
+
             sendComment() {
                 var params = {};
                 params.content = this.commentText;
@@ -175,9 +176,6 @@
                 }).catch(err => {
                     throw err;
                 })
-            },
-            addFixed() {
-
             }
         },
         watch: {

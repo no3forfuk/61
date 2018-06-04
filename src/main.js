@@ -23,31 +23,18 @@ require('./uiComponent/uiComponent');
 //WX
 const wx = require('weixin-js-sdk')
 Vue.prototype.$wx = wx;
-import {getWXConfig} from '@/api/api';
-
-// getWXConfig().then(res => {
-//     if (res.status == 200 && res.data.status_code == 1) {
-//         var opts = res.data.data;
-//         wx.config({
-//             debug: true,
-//             appId: opts.app_id,
-//             timestamp: opts.timestamp,
-//             nonceStr: opts.noncestr,
-//             signature: opts.signature,
-//             jsApiList: ['onMenuShareAppMessage']
-//         })
-//         wx.ready(function () {
-//
-//         });
-//
-//     }
-// }).catch(err => {
-//     throw err
-// })
-
+Vue.prototype.wxConfig = function (opts) {
+    return {
+        debug: false,
+        appId: opts.appId,
+        timestamp: opts.timestamp,
+        nonceStr: opts.nonceStr,
+        signature: opts.signature,
+        jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline']
+    }
+}
 
 router.beforeEach((to, from, next) => {
-
 
     next();
 

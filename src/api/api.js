@@ -70,6 +70,7 @@ module.exports = {
             }
         })
     },
+    //添加评论
     addComment(params) {
         return request({
             url: '/Comment/visitorAdd',

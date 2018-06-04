@@ -68,7 +68,7 @@
 
 <script>
     import {getPostDetailsById, getElement, getSecondRank, getDiscuss, addComment} from '../../api/api'
-    import {timeAgo, phoneType, getWindowHeight} from '../../utils/utils'
+    import {timeAgo, phoneType, getWindowHeight, sharePage} from '../../utils/utils'
     import {Indicator} from 'mint-ui'
 
     export default {
@@ -85,7 +85,11 @@
                 screenHeight: 0,
                 img: '',
                 andriod: false,
-                user: {}
+                user: {},
+                share: {
+                    title: '',
+                    desc: ''
+                }
             }
         },
         mounted() {
@@ -100,10 +104,12 @@
 
         },
         updated() {
-
+            this.$nextTick(function () {
+                this.sharePage();
+            })
         },
         created() {
-            this.getPostDetails();
+
             this.getRank();
             this.getDiscuss();
 
@@ -114,6 +120,14 @@
             }
         },
         methods: {
+            sharePage() {
+                let vm = this;
+                let url = location.href;
+                let title = this.share.title;
+                let desc = this.share.desc;
+                let type = 'link';
+                sharePage(vm, url, title, desc, type)
+            },
             getTextareaFocus() {
                 this.isInputFocus = true
             },
@@ -202,6 +216,8 @@
                 getSecondRank(params).then(res => {
                     if (res.status == 200 && res.data.status_code == 1) {
                         this.rank = res.data.data;
+                        this.getPostDetails();
+                        this.$set(this.share, 'title', res.data.data.ranking_name);
                     }
                 }).catch(err => {
                     throw err;
@@ -211,10 +227,10 @@
                 let id = this.$route.query.id;
                 getPostDetailsById(id).then(res => {
                     if (res.status == 200 && res.data.status_code == 1) {
-                        this.title = res.data.data.post_content;
+                        this.title = res.data.data.post_content
+                        this.$set(this.share, 'desc', res.data.data.post_content);
                         var str = res.data.data.post_content
                         str = str.replace(/\/n/g, '<br>');
-
                         this.$refs.content.innerHTML = str;
                         this.postInfo = res.data.data;
                         var str = res.data.data.updated_at;
