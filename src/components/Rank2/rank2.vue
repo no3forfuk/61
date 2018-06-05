@@ -30,6 +30,7 @@
             this.getRankList(this.page);
 
 
+
         },
         beforeMount() {
 
@@ -43,6 +44,7 @@
             })
         },
         methods: {
+
             sharePage() {
                 let vm = this;
                 let url = location.href;

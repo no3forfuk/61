@@ -15,8 +15,7 @@ import text from './text/text'
 
 Vue.prototype.text = text;
 Vue.use(VueRouter);
-const router = new VueRouter(require('./router/router'));
-
+const router = new VueRouter(require('./router/router').default);
 
 require('./uiComponent/uiComponent');
 

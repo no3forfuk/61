@@ -77,5 +77,12 @@ module.exports = {
             method: 'POST',
             data: params
         })
+    },
+    addStatistics(params) {
+        return request({
+            url: '/Statistical/add',
+            method: 'POST',
+            data: params
+        })
     }
 }

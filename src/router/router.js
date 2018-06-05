@@ -6,6 +6,7 @@ import test from '../components/test'
 import Rank2list from '../components/Rank2/rank2Index'
 import Rank1details from '../components/Rank1/rank1Index'
 import Element from '../components/Element/elementIndex'
+import Html404 from '../components/404/404.vue'
 
 export const routes = [
     {path: '/', name: 'home', component: Home, meta: {keepAlive: true}},
@@ -49,11 +50,11 @@ export const routes = [
                 name: 'rank2list',
                 query: {id: 'id', level: 'level'},
                 component: resolve => require(['../components/Rank2/rank2Index.vue'], resolve),
-                meta: {keepAlive: true}
+                meta: {keepAlive: true},
             },
         ]
     },
-    {path: '/rank1details/', name: 'rank1details', component: Rank1details, meta: {keepAlive: true}},
+    {path: '/rank1details', name: 'rank1details', component: Rank1details, meta: {keepAlive: true}},
 
     {
         path: '/elementDetails',
@@ -76,10 +77,19 @@ export const routes = [
             }
         ]
     },
-    {path: '*', redirect: '/404', component: test,}
+    {path: '*', redirect: '/404', component: Html404},
 
 ]
+
 export default {
+    mode: 'hash',
     routes,
-    mode: 'history'
+    scrollBehavior(to, from, savedPosition) {
+        console.log(to);
+        if (to.hash) {
+            return {
+                selector: to.hash
+            }
+        }
+    },
 }

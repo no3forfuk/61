@@ -54,6 +54,7 @@
         created() {
             this.getRankList(this.$route.query);
 
+
         },
         mounted() {
             this.$nextTick(function () {

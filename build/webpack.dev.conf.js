@@ -29,7 +29,7 @@ module.exports = merge(base, {
             const rp = require('request-promise');
             app.use(bodyParser.urlencoded({extended: false}));
             app.use(bodyParser.json());
-             var baseUrl = 'http://test.bantangtv.com';
+            var baseUrl = 'http://test.bantangtv.com';
             // var baseUrl = 'http://www.rcm.ink';
             const go = function (requset, response) {
                 var method = requset.method;
@@ -80,8 +80,15 @@ module.exports = merge(base, {
             app.post('/api/Comment/visitorAdd', (req, res) => {
                 go(req, res)
             })
+            //获取微信签名
             app.post('/api/Wx/signature', (req, res) => {
                 go(req, res)
+            })
+            //统计
+            var num = 0;
+            app.post('/api/Statistical/add', (req, res) => {
+                num++;
+                console.log(num);
             })
 
         }

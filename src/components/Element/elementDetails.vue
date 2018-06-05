@@ -67,6 +67,7 @@
             this.getSecondRank();
         },
         methods: {
+
             loadNextPage() {
                 this.page++;
                 if (this.page >= this.totalPage) {

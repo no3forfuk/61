@@ -1,6 +1,8 @@
 <template>
     <div>
-        <div style="width: 100%;height: 80px;background-color: #ccc;"></div>
+        <div style="width: 100%;height: 80px;background-color: #ccc;">
+            <a href="#mao">go</a>
+        </div>
         <ul class="ul" style="height: 500px;width: 100%;overflow-y: auto;">
             <li>
                 <p>11</p>
@@ -221,7 +223,7 @@
             <li>
                 <p>731</p>
             </li>
-            <li>
+            <li id="mao">
                 <p>741</p>
             </li>
             <li>

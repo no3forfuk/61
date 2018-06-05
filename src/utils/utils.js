@@ -2,7 +2,7 @@
 'use strict'
 const utils = {}
 //时间格式化
-import {getWXConfig} from '../api/api'
+import {getWXConfig, addStatistics} from '../api/api'
 
 utils.timeFormat = function (type, ms) {
     var time;
@@ -122,6 +122,31 @@ utils.sharePage = function (vm, url, title, desc, type) {
     })
 }
 //流量统计
+const statisticsMap = [
+    {
+        label: '首页',
+        count: [
+            {
+                "01001": '打开个人中心次数'
+            },
+            {
+                "01002": '搜索次数'
+            },
+            {
+                "01003": '打开关注栏次数'
+            },
+            {
+                "01004": '打开榜单页面次数'
+            },
+            {
+                "01005": '页面浏览时长'
+            },
+            {
+                "01005": '页面打开次数'
+            }
+        ]
+    }
+]
 utils.statistics = function () {
 
 }

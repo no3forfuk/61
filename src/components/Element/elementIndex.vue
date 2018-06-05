@@ -35,11 +35,13 @@
                 text: '加载中...',
                 spinnerType: 'fading-circle'
             })
+
         },
         updated() {
             Indicator.close()
         },
         methods: {
+
             sharePage() {
                 let vm = this;
                 let url = location.href;
