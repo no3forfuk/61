@@ -1,9 +1,9 @@
 <template>
     <div class="home-list">
-        <div class="list-header">
+        <div class="list-header" v-if="hasData">
             <span class="text-size-12 text-white" v-text="time"></span>
         </div>
-        <ul class="list-body">
+        <ul class="list-body" v-if="hasData">
             <li v-for="(item,index) in homeList"
                 class="outer"
                 :key="index">
@@ -43,7 +43,8 @@
         data() {
             return {
                 homeList: [],
-                time: ''
+                time: '',
+                hasData: true
             };
         },
         mounted() {
@@ -85,9 +86,19 @@
                     text: '加载中...',
                     spinnerType: 'fading-circle'
                 });
+                if (params == '2018-05-20') {
+                    Indicator.close();
+                    return
+                }
                 getIendx(params).then(res => {
                     if (res.status == 200 && res.data.status_code == 1) {
                         this.homeList = res.data.data;
+                        if (this.homeList.length == 0) {
+                            this.hasData = false;
+                            this.$emit('hasData', 'false')
+                        } else {
+                            this.hasData = true;
+                        }
                         setTimeout(function () {
                             Indicator.close();
                         }, 100)
@@ -129,6 +140,7 @@
             this.getdata();
         },
         computed: {},
+        watch: {},
         props: ["day"]
     };
 </script>

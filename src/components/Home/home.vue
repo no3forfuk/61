@@ -36,6 +36,7 @@
                         ref="loadmore">
                     <y-homelist v-bind:day="day"
                                 v-for="(day,index) in days"
+                                @hasData="loadBeforeDay"
                                 :key="index">
                     </y-homelist>
                 </mt-loadmore>
