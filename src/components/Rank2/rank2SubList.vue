@@ -1,5 +1,5 @@
 <template>
-    <ul>
+    <ul @click="clickTimes">
         <li v-for="(item,index) in listInfo" :key="index">
             <router-link
                     :to="{name:'elementDetails',query:{id:item.id,rank_level:rankInfo.ranking_level,rank_id:rankInfo.id}}">
@@ -17,6 +17,8 @@
 </template>
 
 <script>
+    import {statistics} from '../../utils/utils'
+
     export default {
         data() {
             return {}
@@ -27,7 +29,11 @@
         mounted() {
 
         },
-        methods: {},
+        methods: {
+            clickTimes() {
+                statistics('02004', 1, 1, 2)
+            }
+        },
         props: ['listInfo', 'rankInfo']
     }
 

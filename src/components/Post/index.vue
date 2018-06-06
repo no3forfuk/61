@@ -68,7 +68,7 @@
 
 <script>
     import {getPostDetailsById, getElement, getSecondRank, getDiscuss, addComment} from '../../api/api'
-    import {timeAgo, phoneType, getWindowHeight, sharePage} from '../../utils/utils'
+    import {timeAgo, phoneType, getWindowHeight, sharePage, statistics} from '../../utils/utils'
     import {Indicator} from 'mint-ui'
 
     export default {
@@ -89,7 +89,9 @@
                 share: {
                     title: '',
                     desc: ''
-                }
+                },
+                enterTime: '',
+                leaveTime: ''
             }
         },
         mounted() {
@@ -100,13 +102,28 @@
                 })()
                 this.screenHeight = $(window).height();
             })
-
-
         },
         updated() {
             this.$nextTick(function () {
                 this.sharePage();
             })
+        },
+        beforeDestroy() {
+            //记录离开页面时间
+            this.leaveTime = this.getNowMs();
+            (() => {
+                let time = this.getBrowseTime()
+                statistics('05006', time, 1, 2)
+            })()
+        },
+        beforeRouteLeave(to, from, next) {
+            if (to.name == 'elementDetails') {
+                //记录返回上一次次数
+                statistics('05004', 1, 1, 2)
+            }
+            //记录跳出次数
+            statistics('05005', 1, 1, 2)
+            next()
         },
         created() {
 
@@ -118,8 +135,17 @@
             } else {
                 this.andriod = false;
             }
+            //记录进入页面时间
+            this.enterTime = this.getNowMs();
+            //打开页面次数
+            statistics('05007', 1, 1, 2)
         },
         methods: {
+            getBrowseTime() {
+                let time = Math.abs(this.leaveTime - this.enterTime)
+                time = parseInt(time / 1000)
+                return time
+            },
             sharePage() {
                 let vm = this;
                 let url = location.href;
@@ -155,6 +181,8 @@
                             duration: 1000
                         })
                         this.commentText = ''
+                        //评论次数
+                        statistics('05002', 1, 1, 2)
                         this.getDiscuss();
                     } else {
                         this.$toast({
@@ -201,7 +229,6 @@
                                 obj.name = '猎人 - ' + data[i].visitor.area;
                                 this.userList.push(obj);
                             }
-
                         }
                         Indicator.close();
                     }

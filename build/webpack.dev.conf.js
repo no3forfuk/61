@@ -85,10 +85,9 @@ module.exports = merge(base, {
                 go(req, res)
             })
             //统计
-            var num = 0;
+
             app.post('/api/Statistical/add', (req, res) => {
-                num++;
-                console.log(num);
+                go(req, res)
             })
 
         }

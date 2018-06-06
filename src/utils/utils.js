@@ -71,7 +71,7 @@ utils.getWindowHeight = function (jquery) {
     return height;
 }
 //页面分享
-utils.sharePage = function (vm, url, title, desc, type) {
+utils.sharePage = function (vm, url, title, desc, type, cb) {
     var params = {};
     var linkUrl = url.split('#')[0] + url.split('#/')[1];
     params.url = linkUrl
@@ -99,6 +99,7 @@ utils.sharePage = function (vm, url, title, desc, type) {
                             message: '分享成功',
                             duration: 1000
                         })
+                        cb()
                     }
                 })
                 vm.$wx.onMenuShareTimeline({
@@ -147,7 +148,46 @@ const statisticsMap = [
         ]
     }
 ]
-utils.statistics = function () {
-
+utils.statistics = function (name, num, uid, type) {
+    let params = {};
+    params.statistical_name = name;
+    params.statistical_num = num;
+    params.from_uid = uid;
+    params.user_type = type;
+    addStatistics(params).then(res => {
+        return
+    }).catch(err => {
+        throw err;
+    })
+}
+utils.getNowMs = function () {
+    let time = new Date();
+    return time.getTime()
+}
+//控制页面滚动速度
+utils.ctrlPageScrollSpeed = function (jqueryObj, speed) {
+    var baseSpeed;
+    if (!speed) {
+        baseSpeed = 2;
+    } else {
+        baseSpeed = speed;
+    }
+    var enterY, leaveY;
+    jqueryObj.on('touchstart', function (e) {
+        enterY = e.touches[0].pageY;
+        jqueryObj.on('touchmove', function (e) {
+            e.preventDefault();
+            let Y = e.touches[0].pageY - enterY;
+            if (Y < 0) {
+                jqueryObj[0].scrollTop = Math.abs(Y) / baseSpeed + leaveY;
+            }
+            if (Y > 0) {
+                jqueryObj[0].scrollTop = leaveY - Math.abs(Y) / baseSpeed;
+            }
+        })
+    })
+    jqueryObj.on('touchend', function (e) {
+        leaveY = jqueryObj[0].scrollTop
+    })
 }
 module.exports = utils;

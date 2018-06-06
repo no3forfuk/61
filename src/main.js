@@ -22,21 +22,13 @@ require('./uiComponent/uiComponent');
 //WX
 const wx = require('weixin-js-sdk')
 Vue.prototype.$wx = wx;
-Vue.prototype.wxConfig = function (opts) {
-    return {
-        debug: false,
-        appId: opts.appId,
-        timestamp: opts.timestamp,
-        nonceStr: opts.nonceStr,
-        signature: opts.signature,
-        jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline']
-    }
-}
 
+//全局工具方法
+import {getNowMs} from './utils/utils'
+
+Vue.prototype.getNowMs = getNowMs;
 router.beforeEach((to, from, next) => {
-
     next();
-
 })
 
 new Vue({

@@ -1,167 +1,111 @@
 <template>
-    <div class="rank2-list">
-        <!--<rank2-header></rank2-header>-->
-        <div class="details">
-            <div>
-                <i>{{info.rating || 'A+'}}</i>
-                <i>{{info.exponent || '25'}}</i>
-            </div>
-            <div ref="father">
-                <router-link :to="{name:'rank2Details',query:{id:info.id}}">
-                    <div ref="details" v-text="info.ranking_desc|| '暂时没有描述信息哦'"></div>
-                </router-link>
-                <span>
-                <i class="iconfont icon-jiantou"
-                   style="transform: rotate(90deg);display: block;"
-                   ref="sanjiao"
-                   @click="toggleWidth($event)"></i>
-            </span>
-            </div>
-        </div>
-        <rank2-neck v-bind:rank_id="info.id"></rank2-neck>
-        <mt-loadmore :bottom-method="loadNextPage"
-                     :bottom-all-loaded="allLoaded"
-                     :bottomDistance="pullHeight"
-                     :auto-fill="false"
-                     ref="loadmore">
-            <rank2-sublist :listInfo="subInfo" :rankInfo="info"></rank2-sublist>
-        </mt-loadmore>
-
+    <div class="rank2-index">
+        <y-header>
+            <p slot="title" v-text="'#'+ info.ranking_name"></p>
+        </y-header>
+        <router-view class="view" v-bind:rank2Info="info"></router-view>
     </div>
 </template>
 
 <script>
-    import {getSecondRank, getWXConfig} from '@/api/api'
-    import {getWindowHeight} from '../../utils/utils'
-
+    import {getSecondRank} from '../../api/api'
+    import {getWindowHeight, sharePage, statistics, ctrlPageScrollSpeed} from '../../utils/utils'
+    import {Indicator} from 'mint-ui';
 
     export default {
         data() {
             return {
                 info: {},
-                flag: '#',
-                subInfo: [],
-                query: this.$route.query,
-                allLoaded: false,
-                pullHeight: 30,
+                subInfo: {},
                 page: 1,
-                element: {
-                    totalPage: 0
-                }
-
-            };
+                share: {
+                    title: '',
+                    desc: ''
+                },
+                enterTime: '',
+                leaveTime: ''
+            }
         },
         created() {
-            this.getRankList(this.$route.query);
-
+            this.getRankList(this.page)
+            //记录进入页面时间
+            this.enterTime = this.getNowMs();
+            //榜单页面打开次数
+            statistics('02013', 1, 1, 2)
+        },
+        beforeRouteLeave(to, from, next) {
+            if (to.name == 'home') {
+                //返回主页次数
+                statistics('02007', 1, 1, 2)
+                //离开当前页面次数
+                statistics('02012', 1, 1, 2)
+            }
+            next();
+        },
+        beforeDestroy() {
+            //记录离开页面时间
+            this.leaveTime = this.getNowMs();
+            (() => {
+                let time = this.getBrowseTime()
+                statistics('02003', time, 1, 2)
+            })()
 
         },
         mounted() {
             this.$nextTick(function () {
                 (() => {
                     let widowHeight = getWindowHeight($);
-                    $('.rank2-list').css({height: widowHeight - 81});
+                    $('.rank2-index').css({height: widowHeight});
                 })()
-
             })
+            //控制页面滚动速度 target,speed
+            ctrlPageScrollSpeed($('.view'), 2)
         },
-        computed: {},
         methods: {
-
-            loadNextPage() {
-                this.page++;
-                if (this.page > this.element.totalPage) {
-                    this.$refs.loadmore.onBottomLoaded();
-                } else {
-                    this.getRankList(this.$route.query);
-                    this.$refs.loadmore.onBottomLoaded();
-                }
-
+            getBrowseTime() {
+                let time = Math.abs(this.leaveTime - this.enterTime)
+                time = parseInt(time / 1000)
+                return time
             },
-            toggleWidth(e) {
-                let height = $(this.$refs.details).height();
-                if (height > 65 && $(this.$refs.father).height() == 65) {
-                    $(this.$refs.father).css({
-                        height: 'auto'
-                    })
-                    $(this.$refs.sanjiao).css({
-                        transform: 'rotate(-90deg)'
-                    })
-                    return;
-                }
-                if ($(this.$refs.father).height() > 65) {
-                    $(this.$refs.father).css({
-                        height: '65'
-                    })
-                    $(this.$refs.sanjiao).css({
-                        transform: 'rotate(90deg)'
-                    })
-                }
-
+            sharePage() {
+                sharePage(this, location.href, this.share.title, this.share.desc, 'link')
             },
-            getRankList(query) {
+            getRankList() {
+                var params = {};
+                params.level = 2;
+                params.id = this.$route.query.id;
+                params.page = this.page;
+                Indicator.open({
+                    text: '加载中...',
+                    spinnerType: 'fading-circle'
+                });
                 return new Promise((resolve, reject) => {
-                    var params = {}
-                    params.id = query.id
-                    params.level = query.level
-                    params.page = this.page
                     getSecondRank(params).then(res => {
                         this.info = res.data.data;
-
-                        this.element.totalPage = res.data.data.data.last_page;
-                        if (res.data.data.data.data.length !== 0) {
-                            this.subInfo = this.subInfo.concat(res.data.data.data.data);
-                        } else {
-                            return;
-                        }
+                        this.subInfo = res.data.data.data.data;
+                        this.$set(this.share, 'title', res.data.data.ranking_name);
+                        this.$set(this.share, 'desc', res.data.data.ranking_desc);
+                        this.sharePage();
+                        $(document)[0].title = this.info.ranking_name;
+                        Indicator.close()
                     }).catch(err => {
-                        throw err
+                        throw err;
                     })
                 })
             }
-        },
-        watch: {},
-        props: ['rank2Info']
-    };
+        }
+    }
+
 </script>
 
 <style scoped lang="less">
-    .rank2-list {
+    .rank2-index {
         width: 100%;
-        .details {
-            display: flex;
-            padding: 10px 0;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            div:nth-child(1) {
-                display: flex;
-                flex: 0 0 45px;
-                flex-direction: column;
-                align-items: center;
-                i:nth-child(1) {
-                    color: #DF955A;
-                }
-            }
-            div:nth-child(2) {
-                flex: 1;
-                position: relative;
-                padding-right: 10px;
-                height: 65px;
-                overflow: hidden;
-                > a {
-                    color: #8B8B8B;
-                    display: block;
-                }
-                > span {
-                    color: #666;
-                    position: absolute;
-                    right: 0;
-                    bottom: 0;
-                }
-            }
-
-        }
-
+        position: relative;
     }
 
+    .view {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 </style>

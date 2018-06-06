@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Mint from 'mint-ui';
-// import {Field} from 'mint-ui';
 
 Vue.use(Mint);
 

@@ -27,7 +27,7 @@
             <!--<div class="text-black focus body">-->
             <!--<y-focus></y-focus>-->
             <!--</div>-->
-            <div class="footer">
+            <div class="footer" @click="clickTimes">
                 <mt-loadmore
                         :bottom-method="loadBeforeDay"
                         :bottom-all-loaded="allLoaded"
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-    import {timeFormat, getWindowHeight, sharePage} from "../../utils/utils";
+    import {timeFormat, getWindowHeight, sharePage, statistics} from "../../utils/utils";
     import {getWXConfig} from '@/api/api';
     import {SWITCH} from '@/config'
     import text from "./text"
@@ -55,17 +55,17 @@
         data() {
             return {
                 text: '',
-                time: timeFormat("."),
-                scrollBoxHeight: 0,
                 days: [0],
                 dayNum: 0,
                 allLoaded: false,
                 pullHeight: 30,
-                GLOBAL_SWITCH: {}
+                GLOBAL_SWITCH: {},
+                enterTime: '',
+                leaveTime: ''
             }
         },
         mounted() {
-            //设置固定高度
+            //设置页面固定高度
             (() => {
                 let height = getWindowHeight($);
                 $('.root').css({height: height});
@@ -77,21 +77,43 @@
             })();
             //设置标题
             $(document)[0].title = '首页';
-
         },
-        updated() {
-
+        beforeDestroy() {
+            //记录离开首页时间
+            this.getLeaveTime();
+            //统计首页浏览时长
+            (() => {
+                let time = Math.abs(this.leaveTime - this.enterTime);
+                time = parseInt(time / 1000);
+                statistics('01005', time, 1, 2)
+            })()
         },
         created() {
-            const vm = this;
-            //初始化文本
             (() => {
+                //初始化文本
                 this.text = text;
+                //初始化开关
                 this.GLOBAL_SWITCH = SWITCH;
             })();
-            this.sharePage()
+            this.sharePage();
+            //记录打开首页开始时间
+            this.getEnterTime();
+            //记录首页打开次数
+            statistics('01006', 1, 1, 2)
         },
         methods: {
+            //记录打开榜单次数
+            clickTimes() {
+                statistics('01004', 1, 1, 2)
+            },
+            getLeaveTime() {
+                let time = new Date();
+                this.leaveTime = time.getTime();
+            },
+            getEnterTime() {
+                let time = new Date();
+                this.enterTime = time.getTime();
+            },
             sharePage() {
                 let vm = this;
                 let url = location.href;
@@ -104,6 +126,15 @@
                 this.$router.push('login')
             },
             loadBeforeDay() {
+                //到最早一天不再加载
+                let time = new Date('2018/05/20').getTime();
+                let nowTime = new Date().getTime();
+                let gap = Math.abs(nowTime - time);
+                gap = gap / 3600 / 24 / 1000;
+                if (this.dayNum > parseInt(gap)) {
+                    this.$refs.loadmore.onBottomLoaded();
+                    return
+                }
                 this.dayNum++;
                 this.days.push(this.dayNum);
                 this.$refs.loadmore.onBottomLoaded();
@@ -111,6 +142,8 @@
             openSideBar() {
                 this.$refs.sidebar.style.left = "0";
                 this.$refs.sidebar.style.opacity = 0.95;
+                //记录打开个人中心次数
+                statistics('01001', 1, 1, 2)
             },
             closeSideBar() {
                 this.$refs.sidebar.style.left = "-100%";

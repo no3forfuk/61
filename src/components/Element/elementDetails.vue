@@ -38,7 +38,7 @@
 
 <script>
     import {getElement, getSecondRank} from '@/api/api'
-    import {timeAgo, getWindowHeight} from '@/utils/utils'
+    import {timeAgo, getWindowHeight, statistics} from '@/utils/utils'
 
     export default {
         data() {
@@ -126,6 +126,7 @@
                         this.$refs.details.style.height = 'auto';
                         e.target.style.transform = 'rotate(-90deg)';
                     }
+                    statistics('04005', 1, 1, 2)
                 } else {
                     this.$refs.details.style.height = '60px';
                     e.target.style.transform = 'rotate(90deg)';

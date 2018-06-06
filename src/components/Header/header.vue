@@ -30,7 +30,7 @@
                 this.$router.replace('/');
             }
         },
-        props: ['title', 'flag']
+        props: []
     }
 
 </script>

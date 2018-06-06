@@ -44,21 +44,10 @@
             return {
                 homeList: [],
                 time: '',
-                hasData: true
+                hasData: false
             };
         },
-        mounted() {
-
-        },
-        updated() {
-            this.$nextTick(function () {
-                this.sendValueToFather()
-            })
-        },
         methods: {
-            sendValueToFather() {
-                this.$emit('listionChildValue', this.UlHeight)
-            },
             getListValue(n, m) {
                 var pre = "";
                 var text = "";
@@ -86,10 +75,6 @@
                     text: '加载中...',
                     spinnerType: 'fading-circle'
                 });
-                if (params == '2018-05-20') {
-                    Indicator.close();
-                    return
-                }
                 getIendx(params).then(res => {
                     if (res.status == 200 && res.data.status_code == 1) {
                         this.homeList = res.data.data;
@@ -99,9 +84,7 @@
                         } else {
                             this.hasData = true;
                         }
-                        setTimeout(function () {
-                            Indicator.close();
-                        }, 100)
+                        Indicator.close();
                     }
                 }).catch(err => {
                     throw err;
@@ -137,10 +120,9 @@
             }
         },
         created() {
+            //拉取首页数据
             this.getdata();
         },
-        computed: {},
-        watch: {},
         props: ["day"]
     };
 </script>

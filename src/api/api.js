@@ -78,6 +78,7 @@ module.exports = {
             data: params
         })
     },
+    //添加统计
     addStatistics(params) {
         return request({
             url: '/Statistical/add',

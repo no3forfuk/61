@@ -9,7 +9,7 @@
 
 <script>
     import {getElement} from '@/api/api'
-    import {getWindowHeight, sharePage} from '@/utils/utils'
+    import {getWindowHeight, sharePage, statistics} from '@/utils/utils'
     import {Indicator} from 'mint-ui'
 
     export default {
@@ -21,7 +21,9 @@
                 share: {
                     title: '',
                     desc: ''
-                }
+                },
+                enterTime: '',
+                leaveTime: ''
             }
         },
         mounted() {
@@ -29,19 +31,47 @@
 
             })
         },
+        beforeRouteLeave(to, from, next) {
+            if (to.name == 'rank2list') {
+                //返回榜单页面次数
+                statistics('04007', 1, 1, 2);
+            }
+            next()
+        },
+        beforeRouteUpdate(to, from, next) {
+            if (to.path == '/elementDetails/post') {
+                //打开POST页面次数
+                statistics('04004', 1, 1, 2);
+            }
+            next()
+        },
+        beforeDestroy() {
+            this.leaveTime = this.getNowMs();
+            let time = this.getBrowseTime()
+            //跳出元素页面次数
+            statistics('04008', 1, 1, 2);
+            //浏览元素页面时长
+            statistics('04003', time, 1, 2);
+        },
         created() {
             this.getElementInfo();
             Indicator.open({
                 text: '加载中...',
                 spinnerType: 'fading-circle'
             })
-
+            this.enterTime = this.getNowMs();
+            //元素页面打开次数
+            statistics('04011', 1, 1, 2);
         },
         updated() {
             Indicator.close()
         },
         methods: {
-
+            getBrowseTime() {
+                let time = Math.abs(this.leaveTime - this.enterTime)
+                time = parseInt(time / 1000)
+                return time
+            },
             sharePage() {
                 let vm = this;
                 let url = location.href;

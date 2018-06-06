@@ -3,7 +3,7 @@
 
 import Home from '../components/Home/home'
 import test from '../components/test'
-import Rank2list from '../components/Rank2/rank2Index'
+import Rank2list from '../components/Rank2/rank2Details'
 import Rank1details from '../components/Rank1/rank1Index'
 import Element from '../components/Element/elementIndex'
 import Html404 from '../components/404/404.vue'
@@ -35,21 +35,21 @@ export const routes = [
         path: '/rank2list',
         name: 'rank2',
         query: {level: 'level', id: 'id'},
-        component: resolve => require(['../components/Rank2/rank2.vue'], resolve),
+        component: resolve => require(['../components/Rank2/rank2Index.vue'], resolve),
         meta: {keepAlive: true},
         children: [
             {
                 path: '/rank2list/details',
                 name: 'rank2Details',
                 query: {id: 'id'},
-                component: resolve => require(['../components/Rank2/rank2Details.vue'], resolve),
+                component: resolve => require(['../components/Rank2/rank2Comment.vue'], resolve),
                 meta: {keepAlive: true}
             },
             {
                 path: '/rank2list/list',
                 name: 'rank2list',
                 query: {id: 'id', level: 'level'},
-                component: resolve => require(['../components/Rank2/rank2Index.vue'], resolve),
+                component: resolve => require(['../components/Rank2/rank2Details.vue'], resolve),
                 meta: {keepAlive: true},
             },
         ]
@@ -85,11 +85,7 @@ export default {
     mode: 'hash',
     routes,
     scrollBehavior(to, from, savedPosition) {
-        console.log(to);
-        if (to.hash) {
-            return {
-                selector: to.hash
-            }
-        }
+
+
     },
 }
