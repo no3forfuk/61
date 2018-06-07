@@ -29,8 +29,8 @@ module.exports = merge(base, {
             const rp = require('request-promise');
             app.use(bodyParser.urlencoded({extended: false}));
             app.use(bodyParser.json());
-            var baseUrl = 'http://test.bantangtv.com';
-            // var baseUrl = 'http://www.rcm.ink';
+            // var baseUrl = 'http://test.bantangtv.com';
+            var baseUrl = 'http://www.rcm.ink';
             const go = function (requset, response) {
                 var method = requset.method;
                 var options;
