@@ -6,15 +6,15 @@
         <div class="login-body">
             <div class="login-form">
                 <div class="phone-number">
-                    <input type="number" placeholder="手机号">
+                    <input type="number" placeholder="手机号" v-model="mobile">
                 </div>
                 <div class="pass-word">
-                    <input type="password" placeholder="密码">
+                    <input type="password" placeholder="密码" v-model="password">
                 </div>
             </div>
             <div class="login-opts">
                 <div>
-                    <button>登入</button>
+                    <button @click="loginByMobile">登入</button>
                 </div>
                 <div>
                     <span @click="goRegiser">注册RCM</span>
@@ -37,11 +37,15 @@
 
 <script>
     import {getWindowHeight} from '@/utils/utils'
+    import {loginByMobile} from '@/api/api'
     import {SWITCH} from '@/config'
 
     export default {
         data() {
-            return {}
+            return {
+                mobile: '',
+                password: ''
+            }
         },
         created() {
 
@@ -57,6 +61,32 @@
             })
         },
         methods: {
+            loginByMobile() {
+                let params = {}
+                params.mobile = this.mobile
+                params.password = this.MD5(this.password)
+                loginByMobile(params).then(res => {
+                    if (res.status == 200) {
+                        if (res.data.status_code == 1) {
+                            sessionStorage.setItem('X-Auth-Token', res.data.data.token.access_token)
+                            this.$store.commit('login')
+                            this.$router.replace({path: '/'});
+                            return
+                        }
+                        if (res.data.status_code == 11) {
+                            sessionStorage.setItem('X-Auth-Token', res.data.data.token.access_token)
+                            this.$store.commit('login')
+                            this.$router.push('userInfo');
+                            return
+                        }
+
+                    } else {
+                        alert('系统异常')
+                    }
+                }).catch(err => {
+                    throw err;
+                })
+            },
             goRegiser() {
                 this.$router.push('register')
             },

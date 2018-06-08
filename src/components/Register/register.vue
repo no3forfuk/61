@@ -6,14 +6,14 @@
         <div class="register-body">
             <div class="register-form">
                 <div class="phone-number">
-                    <input type="number" placeholder="手机号">
+                    <input type="number" placeholder="手机号" v-model="mobile">
                 </div>
                 <div class="pass-word">
-                    <input type="password" placeholder="密码">
+                    <input type="password" placeholder="密码" v-model="password">
                 </div>
                 <div class="short-msg">
-                    <input type="nubmer" placeholder="短信验证码">
-                    <span>获取验证码</span>
+                    <input type="nubmer" placeholder="短信验证码" v-model="mobile_code">
+                    <span @click="getMobileCode">获取验证码</span>
                 </div>
             </div>
             <div class="register-opts">
@@ -32,10 +32,15 @@
 
 <script>
     import {getWindowHeight} from '@/utils/utils'
+    import {register, getMobileCode} from '../../api/api'
 
     export default {
         data() {
-            return {}
+            return {
+                mobile: '',
+                password: '',
+                mobile_code: ''
+            }
         },
         created() {
 
@@ -51,8 +56,29 @@
             })
         },
         methods: {
+            getMobileCode() {
+                let params = {};
+                params.mobile = this.mobile;
+                getMobileCode(params).then(res => {
+                    if (res.status == 200 && res.data.status_code == 1) {
+                        console.log();
+                    }
+                }).catch(err => {
+                    throw err
+                })
+            },
             goNext() {
-                this.$router.push('userInfo')
+                let params = {};
+                params.mobile = this.mobile
+                params.password = this.password
+                params.mobile_code = this.mobile_code
+                register(params).then(res => {
+                    if (res.status == 200 && res.data.status_code == 1) {
+                        this.$router.push('userInfo')
+                    }
+                }).catch(err => {
+                    throw err
+                })
             }
         }
     }

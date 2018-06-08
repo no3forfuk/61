@@ -85,5 +85,37 @@ module.exports = {
             method: 'POST',
             data: params
         })
+    },
+    //注册
+    register(params) {
+        return request({
+            url: '/Login/reg',
+            method: 'POST',
+            data: params
+        })
+    },
+    //获取验证码
+    getMobileCode(params) {
+        return request({
+            url: '/Login/sms',
+            method: 'POST',
+            data: params
+        })
+    },
+    //手机登陆
+    loginByMobile(params) {
+        return request({
+            url: '/Login/login',
+            method: 'POST',
+            data: params
+        })
+    },
+    //用户资料
+    addUserInfo(params) {
+        return request({
+            url: '/User/firstUpdate',
+            method: 'POST',
+            data: params
+        })
     }
 }

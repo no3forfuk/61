@@ -2,6 +2,6 @@
 'use strict'
 const config = {}
 config.SWITCH = {
-    LOGIN: false
+    LOGIN: true
 }
 module.exports = config

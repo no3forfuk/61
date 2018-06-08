@@ -29,8 +29,8 @@ module.exports = merge(base, {
             const rp = require('request-promise');
             app.use(bodyParser.urlencoded({extended: false}));
             app.use(bodyParser.json());
-            // var baseUrl = 'http://test.bantangtv.com';
-            var baseUrl = 'http://www.rcm.ink';
+            var baseUrl = 'http://test.bantangtv.com';
+            // var baseUrl = 'http://www.rcm.ink';
             const go = function (requset, response) {
                 var method = requset.method;
                 var options;
@@ -89,7 +89,22 @@ module.exports = merge(base, {
             app.post('/api/Statistical/add', (req, res) => {
                 go(req, res)
             })
-
+            //注册
+            app.post('/api/Login/reg', (req, res) => {
+                go(req, res)
+            })
+            //获取验证码
+            app.post('/api/Login/sms', (req, res) => {
+                go(req, res)
+            })
+            //登陆
+            app.post('/api/Login/login', (req, res) => {
+                go(req, res)
+            })
+            //添加用户信息
+            app.post('/api/User/firstUpdate', (req, res) => {
+                go(req, res)
+            })
         }
 
     }

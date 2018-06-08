@@ -1,16 +1,16 @@
 /*Created By Jsir on 2018/4/25*/
 'use strict'
 import axios from 'axios'
+import store from '../store/store'
 
 const service = axios.create({
     baseURL: '/api'
 })
 
 service.interceptors.request.use(config => {
-    // if (store.state) {
-    //     config.headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('X-Auth-Token') // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    // }
-
+    if (store.state && store.state.isLogin) {
+        config.headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('X-Auth-Token')
+    }
     return config
 }, error => {
     console.log(error) // for debug

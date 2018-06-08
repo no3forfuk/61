@@ -9,7 +9,7 @@
                 <i class="iconfont icon-refresh_icon"></i>
             </div>
             <div class="user-name">
-                <input type="text" placeholder="昵称">
+                <input type="text" placeholder="昵称" v-model="name">
                 <i class="iconfont icon-refresh_icon"></i>
             </div>
         </div>
@@ -20,14 +20,27 @@
 </template>
 
 <script>
+    import {addUserInfo} from '@/api/api'
 
     export default {
         data() {
-            return {}
+            return {
+                name: ''
+            }
         },
         methods: {
             goStart() {
-
+                let params = {};
+                params.name = this.name
+                addUserInfo(params).then(res => {
+                    if (res.status == 200) {
+                        if (res.data.status_code == 1) {
+                            this.$router.replace('home')
+                        }
+                    }
+                }).catch(err => {
+                    throw err;
+                })
             }
         }
     }
